@@ -30,10 +30,6 @@ public class ServerRuntime {
         mainDataMethod.invoke(null, (Object) new String[]{"-all"});
     }
 
-    public void initialize() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        this.invokeMethod("net.minecraft.SharedConstants", "tryDetectVersion");
-    }
-
     public Object invokeMethod(String className, String methodName, Object... args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final MappingClass mappingClass = this.mappingContext.remap(className);
 

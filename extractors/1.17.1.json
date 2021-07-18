@@ -1,0 +1,52 @@
+{
+  "init": [
+    {
+      "class": "net.minecraft.SharedConstants",
+      "invokable": "tryDetectVersion"
+    },
+    {
+      "class": "net.minecraft.server.Bootstrap",
+      "invokable": "bootStrap"
+    }
+  ],
+  "extractors": [
+    {
+      "name": "main",
+      "fields": [
+        {
+          "name": "snapshot",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "SNAPSHOT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "protocolId",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "getProtocolVersion"
+        }
+      ]
+    },
+    {
+      "name": "timings",
+      "fields": [
+        {
+          "name": "ticksPerSecond",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "TICKS_PER_SECOND"
+        },
+        {
+          "name": "ticksPerMinute",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "TICKS_PER_MINUTE"
+        },
+        {
+          "name": "ticksPerGameDay",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "TICKS_PER_GAME_DAY"
+        }
+      ],
+      "methods": []
+    }
+  ]
+}

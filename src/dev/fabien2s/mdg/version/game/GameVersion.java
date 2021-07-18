@@ -1,15 +1,16 @@
 package dev.fabien2s.mdg.version.game;
 
-import java.util.EnumMap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class GameVersion {
 
-    private final Map<GameDownloadType, GameDownloadInfo> downloads;
+    @Getter private final String id;
 
-    public GameVersion() {
-        this.downloads = new EnumMap<GameDownloadType, GameDownloadInfo>(GameDownloadType.class);
-    }
+    private final Map<GameDownloadType, GameDownloadInfo> downloads;
 
     public GameDownloadInfo getDownloadInfo(GameDownloadType type) {
         return downloads.get(type);
