@@ -1,7 +1,10 @@
 package dev.fabien2s.mdg;
 
-import dev.fabien2s.mdg.mappings.MappingClass;
-import dev.fabien2s.mdg.mappings.MappingContext;
+import dev.fabien2s.mdg.mapping.MappingClass;
+import dev.fabien2s.mdg.mapping.MappingContext;
+import dev.fabien2s.mdg.mapping.MappingMethod;
+import dev.fabien2s.mdg.mapping.exceptions.MappingException;
+import dev.fabien2s.mdg.mapping.exceptions.MappingNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,27 +33,53 @@ public class ServerRuntime {
         mainDataMethod.invoke(null, (Object) new String[]{"-all"});
     }
 
-    public Object invokeMethod(String className, String methodName, Object... args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        final MappingClass mappingClass = this.mappingContext.remap(className);
+    public Class<?> getClass(String className) throws ClassNotFoundException, MappingNotFoundException {
+        final MappingClass mappingClass = this.mappingContext.remapClass(className);
+        final String remapClassName = mappingClass.getObfuscated();
+        return Class.forName(remapClassName, true, this.classLoader);
+    }
+
+    public Object invokeMethod(String className, String methodName, Object... args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, MappingException {
+        final MappingClass mappingClass = this.mappingContext.remapClass(className);
 
         final String remapClassName = mappingClass.getObfuscated();
         final Class<?> clazz = Class.forName(remapClassName, true, this.classLoader);
 
-        final String remapMethodName = mappingClass.remap(methodName + "()");
-        final Method method = clazz.getDeclaredMethod(remapMethodName);
+        final MappingMethod mappingMethod = mappingClass.remapMethod(methodName);
+        final Method method = clazz.getDeclaredMethod(mappingMethod.getObfuscated(), mappingMethod.getParametersClasses(this));
 
         return method.invoke(null, args);
     }
 
-    public Object getField(String className, String fieldName) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-        final MappingClass mappingClass = this.mappingContext.remap(className);
+    public Object getField(String className, String fieldName) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, MappingNotFoundException {
+        final MappingClass mappingClass = this.mappingContext.remapClass(className);
 
         final String remapClassName = mappingClass.getObfuscated();
         final Class<?> clazz = Class.forName(remapClassName, true, this.classLoader);
 
-        final String remapFieldName = mappingClass.remap(fieldName);
+        final String remapFieldName = mappingClass.remapField(fieldName);
         final Field field = clazz.getDeclaredField(remapFieldName);
         return field.get(null);
+    }
+
+    public Object invokeMethod(Object obj, Class<?> objClass, String methodName, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException, MappingException {
+        final String objName = objClass.getName();
+        final MappingClass mappingClass = this.mappingContext.deobfuscate(objName);
+
+        final MappingMethod mappingMethod = mappingClass.remapMethod(methodName);
+        final Method method = objClass.getDeclaredMethod(mappingMethod.getObfuscated(), mappingMethod.getParametersClasses(this));
+
+        return method.invoke(obj, args);
+    }
+
+    public Object getField(Object obj, Class<?> objClass, String fieldName) throws NoSuchFieldException, IllegalAccessException, MappingNotFoundException {
+        final String objName = objClass.getName();
+        final MappingClass mappingClass = this.mappingContext.deobfuscate(objName);
+
+        final String remapFieldName = mappingClass.remapField(fieldName);
+        final Field field = objClass.getDeclaredField(remapFieldName);
+
+        return field.get(obj);
     }
 }
 

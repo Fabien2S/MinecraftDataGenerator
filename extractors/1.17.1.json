@@ -47,6 +47,25 @@
         }
       ],
       "methods": []
+    },
+    {
+      "name": "biomes",
+      "registry": {
+          "name": "BIOME",
+          "fields": [],
+          "methods": [
+            {
+              "name": "humid",
+              "invokable": "isHumid"
+            },
+            {
+              "name": "scale",
+              "invokable": "getScale"
+            }
+          ]
+      },
+      "fields": [],
+      "methods": []
     }
   ]
 }

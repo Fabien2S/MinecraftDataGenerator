@@ -6,9 +6,10 @@ import com.google.gson.stream.JsonWriter;
 import dev.fabien2s.mdg.extractor.DataExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractorManager;
-import dev.fabien2s.mdg.mappings.MappingContext;
-import dev.fabien2s.mdg.mappings.MappingParser;
-import dev.fabien2s.mdg.mappings.MappingSyntaxException;
+import dev.fabien2s.mdg.mapping.MappingContext;
+import dev.fabien2s.mdg.mapping.MappingParser;
+import dev.fabien2s.mdg.mapping.exceptions.MappingSyntaxException;
+import dev.fabien2s.mdg.mapping.exceptions.MappingException;
 import dev.fabien2s.mdg.utils.FileUtils;
 import dev.fabien2s.mdg.version.VersionManager;
 import dev.fabien2s.mdg.version.game.GameDownloadInfo;
@@ -37,7 +38,7 @@ public class DataGenerator {
     private final VersionManager versionManager = new VersionManager();
     private final ScriptedExtractorManager extractorManager = new ScriptedExtractorManager();
 
-    public void generate(String versionId) throws IOException, MappingSyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public void generate(String versionId) throws IOException, MappingSyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, MappingException {
 
         LOGGER.debug("Validating output directory");
         FileUtils.ensureEmptyDirectory(this.outputDirectory);

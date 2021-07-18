@@ -1,6 +1,6 @@
-package dev.fabien2s.mdg.mappings;
+package dev.fabien2s.mdg.mapping.exceptions;
 
-public class MappingSyntaxException extends Exception{
+public class MappingSyntaxException extends MappingException {
 
     public MappingSyntaxException(String message) {
         super(message);

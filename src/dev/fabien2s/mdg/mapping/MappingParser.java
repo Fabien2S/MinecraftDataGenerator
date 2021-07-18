@@ -1,5 +1,7 @@
-package dev.fabien2s.mdg.mappings;
+package dev.fabien2s.mdg.mapping;
 
+import dev.fabien2s.mdg.mapping.exceptions.MappingSyntaxException;
+import dev.fabien2s.mdg.utils.RegexUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +26,7 @@ public class MappingParser implements Closeable {
 
     private static final Pattern CLASS_PATTERN = Pattern.compile("^(.+) -> (.+):$");
     private static final Pattern FIELD_PATTERN = Pattern.compile("^ {4}(.+) (.+) -> (.+)$");
+    private static final Pattern METHOD_PATTERN = Pattern.compile("^ {4}(.+) (.+)\\((.*)\\) -> (.+)$");
 
     private final BufferedReader reader;
 
@@ -35,7 +40,7 @@ public class MappingParser implements Closeable {
                 continue;
 
             MappingClass mappingClass = parseClass();
-            classMap.put(mappingClass.getOriginal(), mappingClass);
+            classMap.put(mappingClass.getName(), mappingClass);
         }
 
         return new MappingContext(classMap);
@@ -51,25 +56,43 @@ public class MappingParser implements Closeable {
         LOGGER.debug("Parsed class: {} ({})", classOriginal, classObfuscated);
 
         Map<String, String> fields = new HashMap<>();
+        Set<MappingMethod> methods = new HashSet<>();
 
-        this.reader.mark(4096);
+        int readAheadLimit = 4096;
+        this.reader.mark(readAheadLimit);
         while ((this.line = reader.readLine()) != null && this.line.startsWith(FIELD_PREFIX)) {
 
+            final Matcher methodMatcher = METHOD_PATTERN.matcher(this.line);
+            if(methodMatcher.matches()) {
+
+                String methodOriginal = methodMatcher.group(2);
+                String[] methodParameters = RegexUtils.split(methodMatcher.group(3));
+                String methodObfuscated = methodMatcher.group(4);
+                LOGGER.debug("Parsed method in class {}: {}({}) -> {}", classOriginal, methodOriginal, methodParameters, methodObfuscated);
+
+                methods.add(new MappingMethod(methodOriginal, methodObfuscated, methodParameters));
+
+                this.reader.mark(readAheadLimit);
+                continue;
+            }
+
             Matcher fieldMatcher = FIELD_PATTERN.matcher(this.line);
-            if (!fieldMatcher.matches())
-                throw new MappingSyntaxException("Invalid field definition (" + this.line + ')');
+            if(fieldMatcher.matches()) {
+                String fieldOriginal = fieldMatcher.group(2);
+                String fieldObfuscated = fieldMatcher.group(3);
+                LOGGER.debug("Parsed field in class {}: {} -> {}", classOriginal, fieldOriginal, fieldObfuscated);
 
-            String fieldOriginal = fieldMatcher.group(2);
-            String fieldObfuscated = fieldMatcher.group(3);
-            LOGGER.debug("Parsed field in class {}: {} ({})", classOriginal, fieldOriginal, fieldObfuscated);
+                fields.put(fieldOriginal, fieldObfuscated);
 
-            fields.put(fieldOriginal, fieldObfuscated);
-            this.reader.mark(4096);
+                this.reader.mark(readAheadLimit);
+                continue;
+            }
 
+            throw new MappingSyntaxException("Invalid definition (" + this.line + ')');
         }
 
         this.reader.reset();
-        return new MappingClass(classObfuscated, classOriginal, fields);
+        return new MappingClass(classOriginal, classObfuscated, fields, methods);
     }
 
     @Override
