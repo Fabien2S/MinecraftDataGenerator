@@ -2,14 +2,12 @@ package dev.fabien2s.mdg;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
-import dev.fabien2s.mdg.extractor.DataExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractorManager;
 import dev.fabien2s.mdg.mapping.MappingContext;
 import dev.fabien2s.mdg.mapping.MappingParser;
-import dev.fabien2s.mdg.mapping.exceptions.MappingSyntaxException;
 import dev.fabien2s.mdg.mapping.exceptions.MappingException;
+import dev.fabien2s.mdg.mapping.exceptions.MappingSyntaxException;
 import dev.fabien2s.mdg.utils.FileUtils;
 import dev.fabien2s.mdg.version.VersionManager;
 import dev.fabien2s.mdg.version.game.GameDownloadInfo;
@@ -55,11 +53,11 @@ public class DataGenerator {
 //        serverRuntime.exportServerData();
 
         File extractorFile = new File(extractorsDirectory, gameVersion.getId() + ".json");
-        if(!extractorFile.exists()) {
+        if (!extractorFile.exists()) {
             LOGGER.error("Missing extractor file for version {}. If this is a new release, you could try copying the extractor of the previous version", gameVersion.getId());
             throw new FileNotFoundException();
         }
-        if(!extractorFile.isFile()) {
+        if (!extractorFile.isFile()) {
             LOGGER.error("The extractor for the {} version is not a file", gameVersion.getId());
             throw new IOException();
         }
@@ -71,19 +69,9 @@ public class DataGenerator {
         scriptedExtractor.initialize(serverRuntime);
 
         LOGGER.info("Executing extractors");
-        for (DataExtractor extractor : scriptedExtractor.getExtractors()) {
-            LOGGER.info("Extracting {}", extractor.getName());
-
-            final String name = extractor.getName();
-            final File file = new File("generated", name + ".json");
-
-            try (final JsonWriter writer = new JsonWriter(new FileWriter(file))) {
-                writer.setIndent("    ");
-                extractor.extract(serverRuntime, writer, GSON);
-            } catch (Exception e) {
-                LOGGER.error("Unable to execute " + name + " extractor", e);
-            }
-        }
+        this.extractorManager.executeExtractors(serverRuntime, scriptedExtractor.getExtractors());
+        LOGGER.info("Executing registries extractors");
+        this.extractorManager.executeExtractors(serverRuntime, scriptedExtractor.getRegistries());
     }
 
     private MappingContext downloadMappings(GameVersion version) throws MappingSyntaxException, IOException {

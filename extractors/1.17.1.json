@@ -47,25 +47,43 @@
         }
       ],
       "methods": []
-    },
+    }
+  ],
+  "registries": [
     {
-      "name": "biomes",
-      "registry": {
-          "name": "BIOME",
-          "fields": [],
-          "methods": [
-            {
-              "name": "humid",
-              "invokable": "isHumid"
-            },
-            {
-              "name": "scale",
-              "invokable": "getScale"
-            }
-          ]
-      },
+      "name": "biome",
+      "invokable": "BIOME",
       "fields": [],
-      "methods": []
+      "methods": [
+        {
+          "name": "baseTemperature",
+          "invokable": "getBaseTemperature"
+        },
+        {
+          "name": "category",
+          "invokable": "getBiomeCategory"
+        },
+        {
+          "name": "depth",
+          "invokable": "getDepth"
+        },
+        {
+          "name": "downfall",
+          "invokable": "getDownfall"
+        },
+        {
+          "name": "humid",
+          "invokable": "isHumid"
+        },
+        {
+          "name": "precipitation",
+          "invokable": "getPrecipitation"
+        },
+        {
+          "name": "scale",
+          "invokable": "getScale"
+        }
+      ]
     }
   ]
 }
