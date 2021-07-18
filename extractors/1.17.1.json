@@ -11,52 +11,48 @@
   ],
   "extractors": [
     {
-      "name": "main",
+      "name": "game",
       "fields": [
         {
           "name": "snapshot",
           "class": "net.minecraft.SharedConstants",
           "invokable": "SNAPSHOT"
-        }
-      ],
-      "methods": [
+        },
         {
-          "name": "protocolId",
-          "class": "net.minecraft.SharedConstants",
-          "invokable": "getProtocolVersion"
-        }
-      ]
-    },
-    {
-      "name": "timings",
-      "fields": [
-        {
-          "name": "ticksPerSecond",
+          "name": "ticks_per_second",
           "class": "net.minecraft.SharedConstants",
           "invokable": "TICKS_PER_SECOND"
         },
         {
-          "name": "ticksPerMinute",
+          "name": "ticks_per_minute",
           "class": "net.minecraft.SharedConstants",
           "invokable": "TICKS_PER_MINUTE"
         },
         {
-          "name": "ticksPerGameDay",
+          "name": "ticks_per_game_day",
           "class": "net.minecraft.SharedConstants",
           "invokable": "TICKS_PER_GAME_DAY"
         }
       ],
-      "methods": []
+      "methods": [
+        {
+          "name": "protocol_id",
+          "class": "net.minecraft.SharedConstants",
+          "invokable": "getProtocolVersion"
+        }
+      ]
     }
   ],
   "registries": [
     {
-      "name": "biome",
+      "name": "biomes",
+      "class": "net.minecraft.data.BuiltinRegistries",
+      "entryClass": "net.minecraft.world.level.biome.Biome",
       "invokable": "BIOME",
       "fields": [],
       "methods": [
         {
-          "name": "baseTemperature",
+          "name": "base_temperature",
           "invokable": "getBaseTemperature"
         },
         {
@@ -82,6 +78,133 @@
         {
           "name": "scale",
           "invokable": "getScale"
+        },
+        {
+          "name": "fog_color",
+          "invokable": "getFogColor"
+        },
+        {
+          "name": "sky_color",
+          "invokable": "getSkyColor"
+        },
+        {
+          "name": "water_color",
+          "invokable": "getWaterColor"
+        },
+        {
+          "name": "water_fog_color",
+          "invokable": "getWaterFogColor"
+        },
+        {
+          "name": "foliage_color",
+          "invokable": "getFoliageColor"
+        }
+      ]
+    },
+    {
+      "name": "entities",
+      "class": "net.minecraft.core.Registry",
+      "entryClass": "net.minecraft.world.entity.EntityType",
+      "invokable": "ENTITY_TYPE",
+      "fields": [],
+      "methods": [
+        {
+          "name": "width",
+          "invokable": "getWidth"
+        },
+        {
+          "name": "height",
+          "invokable": "getHeight"
+        },
+        {
+          "name": "is_fire_immune",
+          "invokable": "fireImmune"
+        }
+      ]
+    },
+    {
+      "name": "blocks",
+      "class": "net.minecraft.core.Registry",
+      "entryClass": "net.minecraft.world.level.block.Block",
+      "invokable": "BLOCK",
+      "fields": [],
+      "methods": [
+        {
+          "name": "explosion_resistance",
+          "invokable": "getExplosionResistance"
+        },
+        {
+          "name": "can_respawn_inside",
+          "invokable": "isPossibleToRespawnInThis"
+        },
+        {
+          "name": "friction",
+          "invokable": "getFriction"
+        },
+        {
+          "name": "speed_factor",
+          "invokable": "getSpeedFactor"
+        },
+        {
+          "name": "jump_factor",
+          "invokable": "getJumpFactor"
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "class": "net.minecraft.core.Registry",
+      "entryClass": "net.minecraft.world.item.Item",
+      "invokable": "ITEM",
+      "fields": [],
+      "methods": [
+        {
+          "name": "can_be_depleted",
+          "invokable": "canBeDepleted"
+        },
+        {
+          "name": "can_fit_inside_container",
+          "invokable": "canFitInsideContainerItems"
+        },
+        {
+          "name": "category",
+          "invokable": "getItemCategory"
+        },
+        {
+          "name": "max_damage",
+          "invokable": "getMaxDamage"
+        },
+        {
+          "name": "max_stack",
+          "invokable": "getMaxStackSize"
+        },
+        {
+          "name": "is_complex",
+          "invokable": "isComplex"
+        },
+        {
+          "name": "enchantment_value",
+          "invokable": "getEnchantmentValue"
+        },
+        {
+          "name": "is_fire_resistant",
+          "invokable": "isFireResistant"
+        },
+        {
+          "name": "is_edible",
+          "invokable": "isEdible"
+        },
+        {
+          "name": "drinking_sound",
+          "invokable": "getDrinkingSound"
+        },
+        {
+          "name": "eating_sound",
+          "invokable": "getEatingSound"
+        },
+        {
+          "name": "equip_sound",
+          "invokable": "getEquipSound"
         }
       ]
     }

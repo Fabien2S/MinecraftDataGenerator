@@ -43,7 +43,7 @@ public class MappingClass {
                 return method;
         }
 
-        throw new MappingNotFoundException("No mapping for method " + original);
+        throw new MappingNotFoundException("No mapping for method " + original + " in " + name);
     }
 
 
