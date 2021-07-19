@@ -49,7 +49,9 @@ public class PacketExtractor implements DataExtractor {
                     final MappingClass packetMappingClass = mappingContext.remapClass(packet);
                     final String packetMappingClassName = packetMappingClass.getName();
                     writer.name(packetMappingClassName);
-                    writer.nullValue();
+
+                    int id = (int) runtime.invokeMethod(packetSet, packetSetClass, MappingConstants.CONNECTION_PROTOCOL_ID_METHOD, packet);
+                    writer.value(Integer.toHexString(id));
                 }
 
                 writer.endObject();

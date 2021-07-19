@@ -12,6 +12,7 @@ public class MappingConstants {
     public static final String CONNECTION_PROTOCOL_ENUM = "net.minecraft.network.ConnectionProtocol";
     public static final String CONNECTION_PROTOCOL_PACKETS_FIELD = "flows";
     public static final String CONNECTION_PROTOCOL_PACKETS_METHOD = "getAllPackets()";
+    public static final String CONNECTION_PROTOCOL_ID_METHOD = "getId(java.lang.Class)";
 
     public static final String SERIALIZABLE_INTERFACE = "net.minecraft.util.StringRepresentable";
     public static final String SERIALIZABLE_NAME_METHOD = "getSerializedName()";
