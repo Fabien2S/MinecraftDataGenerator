@@ -23,10 +23,23 @@ public class MappingClass {
     private final Map<String, String> fields;
     private final Set<MappingMethod> methods;
 
+    public boolean hasField(String original) {
+        return fields.containsKey(original);
+    }
+
     public String remapField(String original) throws MappingNotFoundException {
         if(fields.containsKey(original))
             return fields.get(original);
         throw new MappingNotFoundException("No mapping for field " + original + " in " + original);
+    }
+
+    public boolean hasMethod(String original) {
+        for (MappingMethod method : methods) {
+            final String name = method.getName();
+            if(name.equals(original))
+                return true;
+        }
+        return false;
     }
 
     public MappingMethod remapMethod(String original) throws MappingException {
@@ -45,6 +58,5 @@ public class MappingClass {
 
         throw new MappingNotFoundException("No mapping for method " + original + " in " + name);
     }
-
 
 }

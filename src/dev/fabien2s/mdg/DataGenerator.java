@@ -2,6 +2,8 @@ package dev.fabien2s.mdg;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.fabien2s.mdg.extractor.DataExtractor;
+import dev.fabien2s.mdg.extractor.builtin.PacketExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractor;
 import dev.fabien2s.mdg.extractor.scripted.ScriptedExtractorManager;
 import dev.fabien2s.mdg.mapping.MappingContext;
@@ -68,7 +70,9 @@ public class DataGenerator {
         LOGGER.info("Initializing extractors");
         scriptedExtractor.initialize(serverRuntime);
 
-        LOGGER.info("Executing extractors");
+        LOGGER.info("Executing built-in extractors");
+        this.extractorManager.executeExtractors(serverRuntime, new DataExtractor[]{new PacketExtractor()});
+        LOGGER.info("Executing scripted extractors");
         this.extractorManager.executeExtractors(serverRuntime, scriptedExtractor.getExtractors());
         LOGGER.info("Executing registries extractors");
         this.extractorManager.executeExtractors(serverRuntime, scriptedExtractor.getRegistries());

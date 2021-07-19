@@ -27,9 +27,8 @@ public class ScriptedExtractorManager {
     }
 
     public void executeExtractors(ServerRuntime runtime, DataExtractor[] extractors) {
-        LOGGER.info("Executing extractors");
         for (DataExtractor extractor : extractors) {
-            LOGGER.info("Extracting {}", extractor.getName());
+            LOGGER.info("Executing {} extractor", extractor.getName());
 
             final String name = extractor.getName();
             final File file = new File("generated", name + ".json");

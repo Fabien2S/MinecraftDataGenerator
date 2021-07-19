@@ -5,6 +5,7 @@ import dev.fabien2s.mdg.mapping.MappingContext;
 import dev.fabien2s.mdg.mapping.MappingMethod;
 import dev.fabien2s.mdg.mapping.exceptions.MappingException;
 import dev.fabien2s.mdg.mapping.exceptions.MappingNotFoundException;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +19,8 @@ public class ServerRuntime {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerRuntime.class);
 
-    private final MappingContext mappingContext;
+    @Getter private final MappingContext mappingContext;
+
     private final ClassLoader classLoader;
 
     public ServerRuntime(MappingContext mappingContext, URL jarFile) {
@@ -48,6 +50,7 @@ public class ServerRuntime {
         final MappingMethod mappingMethod = mappingClass.remapMethod(methodName);
         final Method method = clazz.getDeclaredMethod(mappingMethod.getObfuscated(), mappingMethod.getParametersClasses(this));
 
+        method.setAccessible(true);
         return method.invoke(null, args);
     }
 
@@ -59,26 +62,28 @@ public class ServerRuntime {
 
         final String remapFieldName = mappingClass.remapField(fieldName);
         final Field field = clazz.getDeclaredField(remapFieldName);
+
+        field.setAccessible(true);
         return field.get(null);
     }
 
     public Object invokeMethod(Object obj, Class<?> objClass, String methodName, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException, MappingException {
-        final String objName = objClass.getName();
-        final MappingClass mappingClass = this.mappingContext.deobfuscate(objName);
+        final MappingClass mappingClass = this.mappingContext.remapClass(objClass);
 
         final MappingMethod mappingMethod = mappingClass.remapMethod(methodName);
         final Method method = objClass.getDeclaredMethod(mappingMethod.getObfuscated(), mappingMethod.getParametersClasses(this));
 
+        method.setAccessible(true);
         return method.invoke(obj, args);
     }
 
     public Object getField(Object obj, Class<?> objClass, String fieldName) throws NoSuchFieldException, IllegalAccessException, MappingNotFoundException {
-        final String objName = objClass.getName();
-        final MappingClass mappingClass = this.mappingContext.deobfuscate(objName);
+        final MappingClass mappingClass = this.mappingContext.remapClass(objClass);
 
         final String remapFieldName = mappingClass.remapField(fieldName);
         final Field field = objClass.getDeclaredField(remapFieldName);
 
+        field.setAccessible(true);
         return field.get(obj);
     }
 }
